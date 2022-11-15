@@ -1,0 +1,69 @@
+.header {
+    height: 80px;
+    padding: 0px 101px 4px 117px;
+
+    .categories {
+        gap: 32px;
+
+        span {
+            color: var(--pri-color);
+            font-weight: 400;
+        }
+        span.active {
+            color: var(--active-color);
+            position: relative;
+            font-weight: 600;
+
+            &::before {
+                content: '';
+                background-color: var(--active-color);
+                width: calc(100% + 32px);
+                position: absolute;
+                height: 2px;
+                left: -16px;
+                bottom: -30px;
+            }
+        }        
+    }
+
+    .icons {
+        display: flex;
+        gap: 22px;
+        align-items: center;
+        color: var(--pri-color);
+        position: relative;
+
+        span {
+            gap: 10px;
+            color: var(--pri-color);
+            cursor: pointer;
+
+            .up {
+                display: none;
+            }           
+
+            &:hover .up {
+                display: block;
+            }
+            &:hover .down {
+                display: none;
+            }
+            
+            &:hover .currency {
+                visibility: visible;
+            }
+
+            &.icon {
+                position: relative;
+
+                &:hover .categoryOverlay {
+                    visibility: visible;
+                }
+
+                &:hover .categories {
+                    background: #000;
+                }
+            }
+        }        
+    }
+}
