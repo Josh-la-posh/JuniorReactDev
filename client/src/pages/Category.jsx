@@ -1,10 +1,13 @@
-import { Component } from "react";
+import { PureComponent } from "react";
+import '../sass/style.scss';
+import Product from "../components/Product";
 
-class Category extends Component {
+class Category extends PureComponent {
     render() {
+        const {data} = this.props;
         return ( 
-            <div className="category">
-                Category
+            <div className="category">                
+                <Product data={data}/>
             </div>
         );
     }

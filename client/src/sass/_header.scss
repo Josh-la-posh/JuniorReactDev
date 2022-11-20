@@ -1,0 +1,95 @@
+.header {
+    height: 80px;
+    padding: 0px 101px 4px 101px;
+    @include tablet {padding: 0 50px;}
+    @include mobile {padding: 0 20px;}
+
+    .categories {
+        gap: 32px;
+        margin-left: 16px;
+        // @include laptop {font-size: 16px; gap: 28px;}
+        @include tablet {font-size: 14px; gap: 24px;}
+        @include mobile {font-size: 12px; gap: 20px;}
+
+        span {
+            color: var(--pri-color);
+            font-weight: 400;
+        }
+        span.active {
+            color: var(--active-color);
+            position: relative;
+            font-weight: 600;
+
+            &::before {
+                content: '';
+                background-color: var(--active-color);
+                width: calc(100% + 32px);
+                position: absolute;
+                height: 2px;
+                left: -16px;
+                bottom: -30px;
+            }
+        }        
+    }
+
+    .icons {
+        display: flex;
+        gap: 22px;
+        align-items: center;
+        color: var(--pri-color);
+        position: relative;
+        @include laptop {gap: 20px;}
+        @include tablet {gap: 26px;}
+        @include mobile {gap: 16px;}
+
+        span {
+            gap: 10px;
+            color: var(--pri-color);
+            cursor: pointer;
+
+            .up {
+                display: none;
+            }           
+
+            &:hover .up {
+                display: block;
+            }
+            &:hover .down {
+                display: none;
+            }
+            
+            &:hover .currency {
+                visibility: visible;
+            }
+            
+            &.icon {
+                position: relative;
+                
+                a {
+                    color: var(--pri-color);
+                }
+
+                &:hover .overlay {
+                    visibility: visible;
+                }
+
+                &:hover .categories {
+                    background: #000;
+                }
+
+                .quantity {
+                    background-color: var(--pri-color);
+                    color: #fff;
+                    height: 20px;
+                    width: 20px;
+                    border-radius: 50%;
+                    font-size: 14px;
+                    font-weight: 700;
+                    position: absolute;
+                    top: -10px;
+                    right: -10px;
+                }
+            }
+        }        
+    }
+}

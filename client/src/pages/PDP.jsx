@@ -1,9 +1,10 @@
-import { Component } from "react";
+import { PureComponent } from "react";
+import PdpContent from "../components/PdpContent";
 
-class PDP extends Component {
+class PDP extends PureComponent {
     render() {
         return (
-            <div className="pdp">PDP</div>
+            <PdpContent product={this.props.product}/>
         );
     }
 }
