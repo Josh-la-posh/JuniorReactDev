@@ -1,10 +1,34 @@
 import { PureComponent } from "react";
+import { connect } from 'react-redux';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {addToCart, removeFromCart, selectSize} from '../redux/ActionCreators';
+
+const mapStateToProps = (state) => ({
+    cart: state.reducer.cart,
+})
+
+const mapDispatchToProps = (dispatch) => ({
+    addToCart: (product) => {dispatch(addToCart(product))},
+    removeFromCart: (product) => {dispatch(removeFromCart(product))},
+    selectSize: (value, product) => {dispatch(selectSize(value, product))},
+})
 
 class PdpContent extends PureComponent {
+    
+    componentDidMount() {
+        addToCart();
+        removeFromCart();
+        selectSize();
+    }
 
     render() {
-        const {product} = this.props;
-        
+        const {product, cart, addToCart, removeFromCart, selectSize} = this.props;
+        const filterCart = cart.filter(cartItem => {
+            return (
+                cartItem.id === product.id
+            )
+            })[0];
+
         return (
             
             <div className="pdp flex">
@@ -37,14 +61,10 @@ class PdpContent extends PureComponent {
                         return (
                             <div key={attribute.id} className="size flex col font-18 weight-700">
                                 <span>{attribute.name}:</span>
-                                <div className={attribute.type === 'swatch' ? 'color flex' : 'sizes flex font-16'}>
-                                    {attribute.type === "swatch" ? attribute.items.map(item => {
+                                <div className={attribute.type === 'swatch' ? 'color flex swatch' : 'sizes flex font-16 text'}>
+                                    {attribute.items.map(item => {
                                         return (
-                                            <span key={item.id} className="flex-center" style={{backgroundColor: `${item.value}`}}></span>
-                                        )
-                                    }) : attribute.items.map(item => {
-                                        return (
-                                            <span key={item.id} className="flex-center">{item.value}</span>
+                                            <span key={item.id} className='flex-center' style={{ backgroundColor: `${item.value}`}} onClick={() => {selectSize(item, product)}}>{attribute.type !== 'swatch' && item.value}</span>
                                         )
                                     })
                                 }
@@ -53,15 +73,21 @@ class PdpContent extends PureComponent {
                         )
                     })}
                     
-                    <div className="size flex col font-18 weight-700">
+                    {/* <div className="size flex col font-18 weight-700">
                         <span>PRICES:</span>
                         <span className="price font-24">${product.price.toFixed(2)}</span>
-                    </div>
+                    </div> */}
 
 
-                    
-                    <button className="font-16 weight-600" >ADD TO CART</button>
-                    
+                    {filterCart ? 
+                    <span className="plusMinus flex-align">
+                        <button className="font-16 weight-600" onClick={() => removeFromCart(product)}><FontAwesomeIcon icon='minus' /></button>
+                        <span>{filterCart.quantity}</span>
+                        <button className="font-16 weight-600" onClick={() => addToCart(product)}><FontAwesomeIcon icon='plus' /></button>
+                    </span>
+                    :
+                    <button className="font-16 weight-600" onClick={() => addToCart(product)}>ADD TO CART</button>
+                    }
                     <p className="font-16 weight-400">{product.description}</p>
                 </div>
             </div>
@@ -69,4 +95,4 @@ class PdpContent extends PureComponent {
     }
 }
 
-export default PdpContent;
+export default connect(mapStateToProps, mapDispatchToProps)(PdpContent);

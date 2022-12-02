@@ -4,7 +4,8 @@ const initialState = {
     cart: [],
     totalQuantity: 0,
     subTotal: 0,
-    currency: ''
+    isSelect: false,
+    currency: JSON.parse(localStorage.getItem('currency'))
 }
 
 if (localStorage.getItem('data')) {
@@ -34,7 +35,6 @@ export const Reducer = (state=initialState, action) => {
             const selectedItem = cart.filter(cartItem => cartItem.id === action.payload.product.id[0]);
             var subTotal = state.subTotal + selectedItem.price;
             localStorage.setItem('Total Price', JSON.stringify(subTotal));
-            // console.log(subTotal)
 
             return {
                 ...state,
@@ -81,9 +81,16 @@ export const Reducer = (state=initialState, action) => {
                 cart
             }
         case ActionTypes.SELECT_CURRENCY:
-            // cart = [action.payload.product]
+            const currency = [...action.payload.currencySymbol][0]
             return {
                 ...state,
+                currency
+            }
+        case ActionTypes.SELECT_SIZE:
+            const isSelect = !state.isSelect
+            return {
+                ...state,
+                isSelect
             }
 
         default:

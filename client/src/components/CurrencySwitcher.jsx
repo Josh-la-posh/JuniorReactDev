@@ -1,21 +1,30 @@
-import { useQuery } from "@apollo/client";
-import { QUERY_CURRENCIES } from '../FetchData/DisplayData';
+import { PureComponent } from "react";
+import { connect } from 'react-redux'
+import { selectCurrency } from "../redux/ActionCreators";
 
-function CurrencySwitcher () {
-    const {data, loading, error} = useQuery(QUERY_CURRENCIES);
+const mapDispatchToProps = (dispatch) => ({
+    switchCurrency: (currency) => {dispatch(selectCurrency(currency))}
+})
 
+class CurrencySwitcher extends PureComponent {
+    componentDidMount() {
+        selectCurrency()
+    }
+
+    render () {
+        const {data, switchCurrency} = this.props;
         return (
             <div className="currency flex col weight-500 font-18">
                 {data &&
                 data.currencies.map(currency =>{
                     return (
-                            <span key={currency.symbol} className="flex-center"><span>{currency.symbol}</span> <span>{currency.label}</span></span>
-                            
-                            )
-                        })
-                    }
+                        <span key={currency.symbol} className={(this.props.currency === currency.symbol) ? 'flex-center active' : 'flex-center'} onClick={() => {switchCurrency(currency)}}><span>{currency.symbol}</span> <span>{currency.label}</span></span>                        
+                    )
+                })
+                }
             </div>
         )
+    }
 }
 
-export default CurrencySwitcher;
+export default connect(null, mapDispatchToProps)(CurrencySwitcher);

@@ -7,7 +7,7 @@ class Category extends PureComponent {
         const {data} = this.props;
         return ( 
             <div className="category">                
-                <Product data={data}/>
+                <Product data={data} />
             </div>
         );
     }

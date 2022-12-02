@@ -1,6 +1,11 @@
 import { PureComponent } from "react";
+import { connect } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
+
+const mapStateToProps = (state) => ({
+    currency: state.reducer.currency
+})
 
 class Product extends PureComponent {
     render() {
@@ -25,7 +30,12 @@ class Product extends PureComponent {
                                                         <span className="icon-cart"><FontAwesomeIcon icon='cart-shopping' className="icon" /></span>
                                                     </div>
                                                     <span className="name">{item.brand}</span>
-                                                    <span className="price weight-500">$50.00</span>
+                                                    <span className="price weight-500">
+                                                        {item.prices.map(price => 
+                                                            this.props.currency === price.currency.symbol && (this.props.currency) + (price.amount)
+                                                        
+                                                             )}
+                                                    </span>
                                                     </div>
                                                 </Link>
                                             )
@@ -41,4 +51,4 @@ class Product extends PureComponent {
     }    
 }
 
-export default Product;
+export default connect(mapStateToProps)(Product);

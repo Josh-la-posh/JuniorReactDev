@@ -34,9 +34,11 @@ export const addToCart = (product) => async (dispatch) => {
             
     //TO INCREASE THE QUANTITY IN CART
     cart.forEach(cartItem => {
-        if (cartItem.id === product.id) {
-            cartItem.quantity += 1;
-            localStorage.setItem('data', JSON.stringify(cart));
+        if (cartItem.selectedAttribute.length === product.attributes.length) {
+            if (cartItem.id === product.id) {
+                cartItem.quantity += 1;
+                localStorage.setItem('data', JSON.stringify(cart));
+            }
         }
     })
 
@@ -44,11 +46,11 @@ export const addToCart = (product) => async (dispatch) => {
     const existingItem = cart.filter(cartItem => cartItem.id === product.id);
 
     //IF PRODUCT DOES NOT EXIST IN CART, CREATE ONE
-    if (existingItem.length === 0) {
-        const newItem = {...product, quantity: 1, index:0};
-        cart.push(newItem);
-        localStorage.setItem('data', JSON.stringify(cart));
-    }
+    // if (existingItem.length === 0) {
+    //     const newItem = {...product, quantity: 1, index:0, size: '', color: ''};
+    //     cart.push(newItem);
+    //     localStorage.setItem('data', JSON.stringify(cart));
+    // }
     
     dispatch({
         type: ActionTypes.ADD_TO_CART,
@@ -131,11 +133,7 @@ export const nextImg = (product) => async (dispatch) => {
                     localStorage.setItem('data', JSON.stringify(cart));
                 }
             }
-
-            console.log(cartItem.index)
-            console.log(image.length)
             return nextImg();
-
         }
     })
 
@@ -183,15 +181,89 @@ export const prevImg = (product) => async (dispatch) => {
     })
 }
 
-export const selectCurrency = (product) => async (dispatch) => {
-    
+export const selectCurrency = (currency) => async (dispatch) => {
+    const currencySymbol = currency.symbol
+    localStorage.setItem('currency', JSON.stringify(currencySymbol))
 
 
     dispatch({
         type: ActionTypes.SELECT_CURRENCY,
         payload: {
-            // cart,
-            product
+            currencySymbol,
+            currency
+        }
+    })
+}
+
+export const selectSize = (value, product) => async (dispatch) => {
+
+    // CART
+    const cart = localStorage.getItem('data') ?
+            JSON.parse(localStorage.getItem('data')) :
+            [];
+
+    if (product.attributes) {
+        product.attributes.map(attribute => {
+            attribute.items.map(item => {
+                if (item === value) {
+
+                    const existingItem = cart.filter(cartItem => cartItem.id === product.id)
+
+                    const att = {};
+                    if (existingItem.length === 0) {
+                        const newItem = {...product, selectedAttribute: [], uId: cart.length};
+                        att[attribute.name] = value.value
+                        newItem.selectedAttribute.push(att);
+                        cart.push(newItem);
+                        localStorage.setItem('data', JSON.stringify(cart));
+                        
+                    } else {
+                        cart.map(cartItem => {
+                            if (cartItem.uId>=0) {
+                                
+                                let index = cartItem.selectedAttribute.findIndex(findValue);
+                                
+                                function findValue(setAtt) {
+                                    if (Object.keys(setAtt)[0] === attribute.name) {
+                                        return Object.keys(setAtt)[0] === attribute.name
+                                    }
+                                }
+
+                                cartItem.selectedAttribute.map(setAtt => {
+                                    if (index>=0) {
+                                        if (Object.keys(cartItem.selectedAttribute[index])[0].includes(attribute.name)) {
+                                            if (Object.values(cartItem.selectedAttribute[index])[0] !== value.value) {
+                                                console.log(cartItem.selectedAttribute.length, product.attributes.length);
+                                                cartItem.selectedAttribute.splice(index, 1);
+                                                att[attribute.name] = value.value
+                                                cartItem.selectedAttribute.push(att)
+                                                localStorage.setItem('data', JSON.stringify(cart));
+                                                return;
+                                            } else console.log(cartItem.selectedAttribute.length);
+                                            return
+                                        }
+                                        return;
+                                    } else {
+                                        att[attribute.name] = value.value;
+                                        cartItem.selectedAttribute.push(att)
+                                        localStorage.setItem('data', JSON.stringify(cart));
+                                        
+                                        return console.log('That\'s not my mate');
+                                    }
+                                })
+                            }
+                        })
+                    }
+                }
+            })
+        })
+    }
+
+    dispatch({
+        type: ActionTypes.SELECT_SIZE,
+        payload: {
+            cart,
+            value
         }
     })
 }

@@ -1,16 +1,26 @@
 import { PureComponent } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { connect } from 'react-redux';
+import {addToCart, removeFromCart} from '../redux/ActionCreators';
 import { Link } from "react-router-dom";
 
 const mapStateToProps = (state) => ({
     cart: state.reducer.cart
 })
 
+const mapDispatchToProps = (dispatch) => ({
+    addToCart: (product) => {dispatch(addToCart(product))},
+    removeFromCart: (product) => {dispatch(removeFromCart(product))}
+})
+
 class CategoryOverlay extends PureComponent {
+    componentDidMount() {
+        addToCart();
+        removeFromCart();
+    }
 
     render() {
-        const {cart} = this.props
+        const {addToCart, removeFromCart, cart} = this.props
 
         return (
             <div className="overlay">
@@ -55,11 +65,11 @@ class CategoryOverlay extends PureComponent {
 
                                     <div className="rightContent flex">
                                         <div className="button flex-btw-align col">
-                                            <button className="add flex-center font-14">
+                                            <button className="add flex-center font-14" onClick={() => {addToCart(cartItem)}}>
                                                 <FontAwesomeIcon icon='plus' />
                                             </button>
                                             <span className="weight-500">{cartItem.quantity}</span>
-                                            <button className="minus flex-center font-14">
+                                            <button className="minus flex-center font-14" onClick={() => {removeFromCart(cartItem)}}>
                                                 <FontAwesomeIcon icon='minus' />
                                             </button>
                                         </div>
@@ -86,4 +96,4 @@ class CategoryOverlay extends PureComponent {
     }
 }
 
-export default connect(mapStateToProps)(CategoryOverlay);
+export default connect(mapStateToProps, mapDispatchToProps)(CategoryOverlay);

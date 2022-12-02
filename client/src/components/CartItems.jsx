@@ -1,15 +1,32 @@
 import { PureComponent } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { connect } from 'react-redux';
+import {addToCart, removeFromCart, nextImg, prevImg} from '../redux/ActionCreators';
 
 const mapStateToProps = (state) => ({
     cart: state.reducer.cart,
+    subTotal: state.reducer.subTotal,
+    index: state.reducer.index
+})
+
+const mapDispatchToProps = (dispatch) => ({
+    addToCart: (product) => {dispatch(addToCart(product))},
+    removeFromCart: (product) => {dispatch(removeFromCart(product))},
+    nextImg: (product) => {dispatch(nextImg(product))},
+    prevImg: (product) => {dispatch(prevImg(product))},
 })
     
 class CartItems extends PureComponent {
+    
+    componentDidMount() {
+        addToCart();
+        removeFromCart();
+        nextImg();
+        prevImg();
+    }
 
     render() {
-        const {cart } = this.props;
+        const {addToCart, removeFromCart, cart, subTotal, nextImg, prevImg} = this.props;
 
 
 
@@ -37,7 +54,7 @@ class CartItems extends PureComponent {
                                                         )
                                                     }) : attribute.items.map(item => {
                                                         return (
-                                                            <span key={item.id} className="flex-center">{item.value}</span>
+                                                            <span key={item.id} className={cartItem.size === item.value ? 'flex-center sizeBg' : 'flex-center'}>{item.value}</span>
                                                         )
                                                     })
                                                 }
@@ -49,21 +66,21 @@ class CartItems extends PureComponent {
 
                                 <div className="rightContent flex">
                                     <div className="button flex-btw-align col">
-                                        <button className="add font-15 flex-center" >
+                                        <button className="add font-15 flex-center" onClick={()=>addToCart(cartItem)}>
                                             <FontAwesomeIcon icon='plus' />
                                         </button>
                                         <span className="font-24 weight-500">{cartItem.quantity}</span>
-                                        <button className="minus font-15 flex-center" >
+                                        <button className="minus font-15 flex-center" onClick={()=>removeFromCart(cartItem)}>
                                             <FontAwesomeIcon icon='minus' />
                                         </button>
                                     </div>
                                     <div className="content">
                                         <img src={cartItem.gallery[cartItem.index]} alt="" />
                                         <span className="icon flex">
-                                            <button className="arrow flex-center font-15">
+                                            <button onClick={() => prevImg(cartItem)} className="arrow flex-center font-15">
                                                 <FontAwesomeIcon icon='chevron-left' />
                                             </button>
-                                            <button className="arrow flex-center font-15">
+                                            <button onClick={() => nextImg(cartItem)} className="arrow flex-center font-15">
                                                 <FontAwesomeIcon icon='chevron-right' />
                                             </button>
                                         </span>
@@ -98,4 +115,4 @@ class CartItems extends PureComponent {
     }
 }
 
-export default connect(mapStateToProps)(CartItems);
+export default connect(mapStateToProps, mapDispatchToProps)(CartItems);

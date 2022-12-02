@@ -5,11 +5,12 @@ import Header from './components/Header';
 import Category from './pages/Category';
 import PDP from './pages/PDP';
 import Cart from './pages/Cart';
-import { QUERY_ALL_CATEGORIES } from './FetchData/DisplayData';
+import { QUERY_ALL_CATEGORIES, QUERY_CURRENCIES } from './FetchData/DisplayData';
 
 function App() {
 
   const {data, loading, error} = useQuery(QUERY_ALL_CATEGORIES);
+  const {data: currency, loading: currencyLoading, error: currencyErr} = useQuery(QUERY_CURRENCIES);
   
   const PdpId = () => {
     if (loading) {
@@ -30,7 +31,7 @@ function App() {
   return(
     
     <BrowserRouter>
-      <Header/>
+      <Header data={currency}/>
       <Routes>
         <Route path='/'>
           <Route index element={<Category data={data}/>} />

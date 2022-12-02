@@ -7,3 +7,5 @@ export const DATA_FAILED = 'DATA_FAILED';
 export const NEXT_IMAGE = 'NEXT_IMAGE';
 export const PREV_IMAGE = 'PREV_IMAGE';
 export const SELECT_CURRENCY = 'SELECT_CURRENCY';
+export const SELECT_SIZE = 'SELECT_SIZE';
+export const SELECT_COLOR = 'SELECT_COLOR';
