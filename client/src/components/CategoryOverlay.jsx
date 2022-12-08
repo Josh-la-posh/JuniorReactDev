@@ -5,7 +5,9 @@ import {addToCart, removeFromCart} from '../redux/ActionCreators';
 import { Link } from "react-router-dom";
 
 const mapStateToProps = (state) => ({
-    cart: state.reducer.cart
+    cart: state.reducer.cart,
+    currency: state.reducer.currency,
+    subTotal: state.reducer.subTotal
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -20,7 +22,7 @@ class CategoryOverlay extends PureComponent {
     }
 
     render() {
-        const {addToCart, removeFromCart, cart} = this.props
+        const {addToCart, removeFromCart, cart, currency, subTotal} = this.props
 
         return (
             <div className="overlay">
@@ -38,7 +40,11 @@ class CategoryOverlay extends PureComponent {
                                     <div className="leftContent flex col font-16">
                                         <span className="weight-300">{cartItem.name}</span>
                                         <span className="nameLight weight-300">{cartItem.brand}</span>
-                                        <span className="price weight-500">$50.00</span>
+                                        <span className="price weight-500">
+                                            {cartItem.prices.map(price => 
+                                                this.props.currency === price.currency.symbol && (this.props.currency) + (price.amount)
+                                            )}
+                                        </span>
 
 
                                         {cartItem.attributes.map(attribute => {
@@ -46,13 +52,13 @@ class CategoryOverlay extends PureComponent {
                                                 <div key={attribute.id} className="size flex col font-14 weight-400">
                                                     <span>{attribute.name}:</span>
                                                     <div className={attribute.type === "swatch" ? 'color flex' : 'sizes flex'}>
-                                                        {attribute.type === "swatch" ? attribute.items.map(item => {
+                                                        {attribute.type === "swatch" ? attribute.items.map((item, index) => {
                                                             return (
-                                                                <span key={item.id} style={{backgroundColor: `${item.value}`}}></span>
+                                                                <span key={index} className="flex-center" style={cartItem.selectedAttribute.some(att => Object.keys(att)[0] === attribute.name && Object.values(att)[0] === item.value) ? {backgroundColor: `${item.value}`, outline: '1px solid #5ECE7B'} : {backgroundColor: `${item.value}`}}></span>
                                                             )
-                                                        }) : attribute.items.map(item => {
+                                                        }) : attribute.items.map((item, index) => {
                                                             return (
-                                                                <span key={item.id} className="flex-center">{item.value}</span>
+                                                                <span key={index} className="flex-center" style={cartItem.selectedAttribute.some(att => Object.keys(att)[0] === attribute.name && Object.values(att)[0] === item.value) ? { backgroundColor: '#000', color: '#fff'} : { backgroundColor: '#fff', color: '#000'}}>{item.value}</span>
                                                             )
                                                         })
                                                     }
@@ -74,7 +80,7 @@ class CategoryOverlay extends PureComponent {
                                             </button>
                                         </div>
                                         <div className="content">
-                                            <img src={cartItem.gallery} alt="" />                                
+                                            <img src={cartItem.gallery[0]} alt="" />                                
                                         </div>
                                     </div>
                             </section>
@@ -83,7 +89,7 @@ class CategoryOverlay extends PureComponent {
 
                     <div className="total flex-btw-align">
                         <span className="weight-500">Total</span>
-                        <span className="weight-700">$200.00</span>
+                        <span className="weight-700">{currency}{subTotal}</span>
                     </div>
                     
                     <div className="button flex-btw-align font-14 weight-600">

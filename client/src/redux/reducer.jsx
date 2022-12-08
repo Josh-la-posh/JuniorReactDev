@@ -1,4 +1,3 @@
-import { selectAttribute } from './ActionCreators';
 import * as ActionTypes from './ActionTypes';
 
 const initialState = {
@@ -27,11 +26,11 @@ if (localStorage.getItem('Total Price')) {
     initialState.subTotal = 0;
 }
 
-if (localStorage.getItem('selectedAttribute')) {
-    initialState.selectedAttribute = JSON.parse(localStorage.getItem('selectedAttribute'))
-} else {
-    initialState.selectedAttribute = [];
-}
+// if (localStorage.getItem('selectedAttribute')) {
+//     initialState.selectedAttribute = JSON.parse(localStorage.getItem('selectedAttribute'))
+// } else {
+//     initialState.selectedAttribute = [];
+// }
 
 export const Reducer = (state=initialState, action) => {
     switch(action.type) {
@@ -84,22 +83,21 @@ export const Reducer = (state=initialState, action) => {
         case ActionTypes.SELECT_SIZE:
             return selectedAttribute(state, action)
         case ActionTypes.DEFAULT_ATTRIBUTE:
-            const products = [...action.payload]
-            let selectedAttribute;
-            products.forEach(product => {
-                selectedAttribute = product.inStock
-                    ? product.attributes.reduce((selectedAttribute, { name, items }) => {
-                        selectedAttribute.push({ [name]: items[0].value});
-                        return selectedAttribute
-                    }, [])
-                    : [];            
-                state.selectedAttribute = selectedAttribute
-                localStorage.setItem('selectedAttribute', JSON.stringify(selectedAttribute));
-                console.log(selectedAttribute)
-            })
+            const product = action.payload
+
+            let selectedAttributes = product.inStock
+                ? product.attributes.reduce((selectedAttributes, { name, items }) => {
+                    selectedAttributes.push({ [name]: items[0].value});
+                    // localStorage.setItem('selectedAttribute', JSON.stringify(selectedAttribute));
+                    return selectedAttributes
+                }, [])
+                : [];            
+            state.selectedAttribute = selectedAttributes
+            console.log(selectedAttributes)
+            console.log(product.inStock)
             return {
                 ...state,
-                selectedAttribute
+                selectedAttributes
             }
 
         default:
@@ -113,24 +111,10 @@ export const Reducer = (state=initialState, action) => {
 const addProductToCart = (state, action) => {
     var cart = [...action.payload.cart];
     var product = action.payload.product;
-    const index = cart.indexOf(action.payload);
-    console.log(index)
     var {selectedAttribute} = state;
     let counter = 0;
-
-    let selectedAttributes = product.inStock
-        ? product.attributes.reduce((selectedAttributes, { name, items }) => {
-            selectedAttributes.push({ [name]: items[0].value});
-            localStorage.setItem('selectedAttribute', JSON.stringify(selectedAttribute));
-            return selectedAttributes
-        }, [])
-        : [];            
-    state.selectedAttribute = selectedAttributes
-    console.log(selectedAttributes)
-    console.log(product.inStock)
-
-
-
+    let totalQuantity;
+    let subTotal;
 
     if (product.attributes.length === selectedAttribute.length) {
         cart.some(cartItem => cartItem.id === product.id)
@@ -163,15 +147,38 @@ const addProductToCart = (state, action) => {
         counter === uniqueId.length &&
             cart.push({...product, selectedAttribute: selectedAttribute, qty: 1})
             localStorage.setItem('data', JSON.stringify(cart));
-    }
 
-    let totalQuantity;
+
+        //  TOTAL QUANTITY
+
+        totalQuantity = cart.reduce((total, cartItem) => {
+            return total + cartItem.qty;
+        }, 0);
+        state.totalQuantity = totalQuantity;
+        localStorage.setItem('Total Quantity', JSON.stringify(totalQuantity))
+
+        // TOTAL PRICE
+
+        subTotal = cart.reduce((total, cartItem) => {
+            cartItem.prices.forEach(({currency, amount}) => {
+                if (currency.symbol === state.currency) {
+                    total = amount * cartItem.qty
+                }
+            });
+            return total;
+        }, 0);
+        state.subTotal = subTotal;
+        localStorage.setItem('Total Price', JSON.stringify(subTotal))
+
+
+    }
 
 
     return {
         ...state,
         cart,
-        product
+        product,
+        totalQuantity
     }
 }
 
@@ -190,7 +197,7 @@ const selectedAttribute = (state, action) => {
                     selectedAttribute.splice(index, 1, {...selectedAttribute[index], [name]: value});
                 })
                 : selectedAttribute.push({ [name]: value});
-                localStorage.setItem('selectedAttribute', JSON.stringify(selectedAttribute));
+                // localStorage.setItem('selectedAttribute', JSON.stringify(selectedAttribute));
                 
                 state.selectAttribute = selectedAttribute
 

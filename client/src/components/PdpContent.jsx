@@ -4,23 +4,27 @@ import {addToCart, removeFromCart, selectAttribute, defaultAttribute} from '../r
 
 const mapStateToProps = (state) => ({
     cart: state.reducer.cart,
-    selectedAttribute: state.reducer.selectedAttribute
+    selectedAttribute: state.reducer.selectedAttribute,
+    currency: state.reducer.currency,
 })
 
 const mapDispatchToProps = (dispatch) => ({
     addToCart: (product) => {dispatch(addToCart(product))},
     removeFromCart: (product) => {dispatch(removeFromCart(product))},
     selectAttribute: (value, name) => {dispatch(selectAttribute(value, name))},
-    // defaultAttribute: (product) => (dispatch(defaultAttribute(product)))
 })
 
 class PdpContent extends PureComponent {
+    state = {displayedImg: ''}
     
     componentDidMount() {
         addToCart();
         removeFromCart();
         selectAttribute();
-        // defaultAttribute();
+    }
+
+    currentImg = (e) => {
+        this.setState({displayedImg: e.target.currentSrc})
     }
 
     render() {
@@ -35,12 +39,12 @@ class PdpContent extends PureComponent {
                     <div className="colorChange flex col">
                         {product.gallery.map(image => {
                             return (
-                                <img key={image} src={image} alt="" />
+                                <img key={image} onClick={(e) => this.currentImg(e)} src={image} alt="" />
                             )
                         })}
                     </div>
                     <div className="image">
-                        <img src={product.gallery} alt="" />
+                        <img src={this.state.displayedImg === '' ? product.gallery[0] : this.state.displayedImg} alt="" />
                     </div>
                 </div>
 
@@ -60,11 +64,7 @@ class PdpContent extends PureComponent {
                                 <div className={attribute.type === 'swatch' ? 'color flex swatch' : 'sizes flex font-16 text'}>
                                     {attribute.items.map((item, index) => {
                                         return (
-                                            // <label className="container" key={item.id}>
-                                                // {console.log(selectedAttribute.some(att => Object.keys(att)[0] === attribute.name && Object.values(att)[0] === item.value))}
-                                                // <input type="radio" name={attribute.name}/>
-                                                <span key={item.id} className='flex-center checkmark' style={selectedAttribute.some(att => Object.keys(att)[0] === attribute.name && Object.values(att)[0] === item.value) ? (attribute.type === 'swatch' ? {backgroundColor: `${item.value}`, outline: '1px solid #5ECE7B'} : { backgroundColor: '#000', color: '#fff'}) : (attribute.type === 'swatch' ? {backgroundColor: `${item.value}`} : { backgroundColor: '#fff', color: '#000'})} onClick={() => {selectAttribute(item.value, attribute.name)}}>{attribute.type !== 'swatch' && item.value}</span>
-                                            // </label>
+                                            <span key={index} className='flex-center checkmark' style={selectedAttribute.some(att => Object.keys(att)[0] === attribute.name && Object.values(att)[0] === item.value) ? (attribute.type === 'swatch' ? {backgroundColor: `${item.value}`, outline: '1px solid #5ECE7B'} : { backgroundColor: '#000', color: '#fff'}) : (attribute.type === 'swatch' ? {backgroundColor: `${item.value}`} : { backgroundColor: '#fff', color: '#000'})} onClick={() => {selectAttribute(item.value, attribute.name)}}>{attribute.type !== 'swatch' && item.value}</span>
                                         )
                                     })
                                 }
@@ -73,14 +73,16 @@ class PdpContent extends PureComponent {
                         )
                     })}
                     
-                    {/* <div className="size flex col font-18 weight-700">
+                    <div className="size flex col font-18 weight-700">
                         <span>PRICES:</span>
-                        <span className="price font-24">${product.price.toFixed(2)}</span>
-                    </div> */}
+                            {product.prices.map(price =>
+                                this.props.currency === price.currency.symbol && (this.props.currency) + (price.amount)                                            
+                            )}
+                    </div>
 
 
                     <button className="font-16 weight-600" onClick={() => addToCart(product)}>ADD TO CART</button>
-                    <p className="font-16 weight-400">{product.description}</p>
+                    <p className="font-16 weight-400" >{product.description.replace(/<[^>]+>/g, '')}</p>
                 </div>
             </div>
         );

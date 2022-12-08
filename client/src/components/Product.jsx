@@ -18,15 +18,11 @@ class Product extends PureComponent {
     
     componentDidMount() {
         addToCart();
-        this.defaultAttribute();
-    }
-
-    defaultAttribute = () => {
-        this.props.defaultAttribute(this.props.products);
+        defaultAttribute();
     }
     
     render() {
-        const {products, categoryName} = this.props
+        const {products, addToCart, categoryName, defaultAttribute} = this.props
 
         return (
             <div className="content">
@@ -36,7 +32,7 @@ class Product extends PureComponent {
                         {products.length ?
                             products.map(product => {
                                 return(
-                                    <Link key={product.id} to={product.inStock && (`pdp/${product.id}`)}>
+                                    <Link key={product.id} to={product.inStock && (`pdp/${product.id}`)} onClick={() => defaultAttribute(product)}>
                                         <div className={product.inStock ? 'col-lg-4 flex col' : 'col-lg-4 flex col outOfStock'}>                            
                                             <div className="img">
                                                 <img src={product.gallery[0]} alt="" />
@@ -46,7 +42,7 @@ class Product extends PureComponent {
                                             <span className="name">{product.brand}</span>
                                             <span className="price weight-500">
                                                 {product.prices.map(price => 
-                                                    this.props.currency === price.currency.symbol && (this.props.currency) + (price.amount)                                            
+                                                    this.props.currency === price.currency.symbol && (this.props.currency) + (price.amount)
                                                 )}
                                             </span>
                                         </div>

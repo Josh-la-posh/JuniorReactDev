@@ -53,7 +53,7 @@ class Header extends PureComponent {
                         <CurrencySwitcher data={data} currency={currency}/>
                     </span>
                     <span className="icon">
-                        <Link to='cart'><FontAwesomeIcon icon='cart-shopping' className="font-18"/><span className="flex-center quantity">{totalQuantity}</span></Link>
+                        <Link to='cart'><FontAwesomeIcon icon='cart-shopping' className="font-18"/><span className="flex-center quantity">{totalQuantity ? totalQuantity : 0}</span></Link>
                         <CategoryOveray/>
                     </span>
                 </div>

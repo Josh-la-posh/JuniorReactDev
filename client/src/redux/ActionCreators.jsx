@@ -41,7 +41,6 @@ export const addToCart = (product) => async (dispatch) => {
     })
 }
 
-
 export const removeFromCart = (product) => async (dispatch) => {
 
     // CART
@@ -101,7 +100,7 @@ export const removeItem = (product) => async (dispatch) => {
 export const nextImg = (product) => async (dispatch) => {
     const cart = JSON.parse(localStorage.getItem('data'));
     
-    cart.forEach(cartItem => {
+    cart.some(cartItem => {
         if (cartItem.id === product.id) {
             let image = cartItem.gallery;
 

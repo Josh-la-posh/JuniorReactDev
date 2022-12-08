@@ -59,7 +59,7 @@ function App() {
             <Route index element={<Category data={data}/>} />
             <Route path='category/:category' element={<Category data={data} />} />
             <Route path='pdp/:id' element={<PdpId />} />
-            <Route path='cart' element={<Cart data={data}/>} />
+            <Route path='cart' element={<Cart/>} />
           </Route>
           <Route path='*' element={<Navigate to='/Scandiweb/' replace={true} />} />
         </Routes>
