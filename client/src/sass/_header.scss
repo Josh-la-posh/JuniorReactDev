@@ -6,25 +6,30 @@
         gap: 2rem;
         margin-left: 1rem;
 
-        span {
+        a {
             color: var(--pri-color);
             font-weight: 400;
-        }
-        span.active {
-            color: var(--active-color);
-            position: relative;
-            font-weight: 600;
-
-            &::before {
-                content: '';
-                background-color: var(--active-color);
-                width: calc(100% + 2rem);
-                position: absolute;
-                height: 0.125rem;
-                left: -1rem;
-                bottom: -1.875rem;
+            text-transform: uppercase;
+        
+            &:active, &:visited {
+                color: var(--active-color);
+                position: relative;
+                font-weight: 600;
+                
+                &::before {
+                    content: '';
+                    background-color: var(--active-color);
+                    width: calc(100% + 2rem);
+                    position: absolute;
+                    height: 0.125rem;
+                    left: -1rem;
+                    bottom: -1.875rem;
+                }
             }
-        }        
+            &:hover {
+                color: var(--active-color);
+            }
+        }
     }
 
     .icons {

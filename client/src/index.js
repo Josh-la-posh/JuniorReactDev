@@ -11,7 +11,7 @@ import { ConfigureStore } from './redux/ConfigureStore';
 
 library.add(faCartShopping, faChevronDown, faChevronUp, faDollarSign, faEuroSign, faYenSign, faChevronRight, faChevronLeft, faPlus, faMinus)
 
-const client = new ApolloClient({
+export const client = new ApolloClient({
   cache: new InMemoryCache(),
   uri: "http://localhost:4000/graphql",
 });

@@ -9,3 +9,4 @@ export const PREV_IMAGE = 'PREV_IMAGE';
 export const SELECT_CURRENCY = 'SELECT_CURRENCY';
 export const SELECT_SIZE = 'SELECT_SIZE';
 export const SELECT_COLOR = 'SELECT_COLOR';
+export const DEFAULT_ATTRIBUTE = 'DEFAULT_ATTRIBUTE';

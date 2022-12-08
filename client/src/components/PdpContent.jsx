@@ -1,16 +1,17 @@
 import { PureComponent } from "react";
 import { connect } from 'react-redux';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {addToCart, removeFromCart, selectSize} from '../redux/ActionCreators';
+import {addToCart, removeFromCart, selectAttribute, defaultAttribute} from '../redux/ActionCreators';
 
 const mapStateToProps = (state) => ({
     cart: state.reducer.cart,
+    selectedAttribute: state.reducer.selectedAttribute
 })
 
 const mapDispatchToProps = (dispatch) => ({
     addToCart: (product) => {dispatch(addToCart(product))},
     removeFromCart: (product) => {dispatch(removeFromCart(product))},
-    selectSize: (value, product) => {dispatch(selectSize(value, product))},
+    selectAttribute: (value, name) => {dispatch(selectAttribute(value, name))},
+    // defaultAttribute: (product) => (dispatch(defaultAttribute(product)))
 })
 
 class PdpContent extends PureComponent {
@@ -18,17 +19,12 @@ class PdpContent extends PureComponent {
     componentDidMount() {
         addToCart();
         removeFromCart();
-        selectSize();
+        selectAttribute();
+        // defaultAttribute();
     }
 
     render() {
-        const {product, cart, addToCart, removeFromCart, selectSize} = this.props;
-        const filterCart = cart.filter(cartItem => {
-            return (
-                cartItem.id === product.id
-            )
-            })[0];
-
+        const {product, addToCart, removeFromCart, selectAttribute, selectedAttribute} = this.props;
         return (
             
             <div className="pdp flex">
@@ -62,9 +58,13 @@ class PdpContent extends PureComponent {
                             <div key={attribute.id} className="size flex col font-18 weight-700">
                                 <span>{attribute.name}:</span>
                                 <div className={attribute.type === 'swatch' ? 'color flex swatch' : 'sizes flex font-16 text'}>
-                                    {attribute.items.map(item => {
+                                    {attribute.items.map((item, index) => {
                                         return (
-                                            <span key={item.id} className='flex-center' style={{ backgroundColor: `${item.value}`}} onClick={() => {selectSize(item, product)}}>{attribute.type !== 'swatch' && item.value}</span>
+                                            // <label className="container" key={item.id}>
+                                                // {console.log(selectedAttribute.some(att => Object.keys(att)[0] === attribute.name && Object.values(att)[0] === item.value))}
+                                                // <input type="radio" name={attribute.name}/>
+                                                <span key={item.id} className='flex-center checkmark' style={selectedAttribute.some(att => Object.keys(att)[0] === attribute.name && Object.values(att)[0] === item.value) ? (attribute.type === 'swatch' ? {backgroundColor: `${item.value}`, outline: '1px solid #5ECE7B'} : { backgroundColor: '#000', color: '#fff'}) : (attribute.type === 'swatch' ? {backgroundColor: `${item.value}`} : { backgroundColor: '#fff', color: '#000'})} onClick={() => {selectAttribute(item.value, attribute.name)}}>{attribute.type !== 'swatch' && item.value}</span>
+                                            // </label>
                                         )
                                     })
                                 }
@@ -79,15 +79,7 @@ class PdpContent extends PureComponent {
                     </div> */}
 
 
-                    {filterCart ? 
-                    <span className="plusMinus flex-align">
-                        <button className="font-16 weight-600" onClick={() => removeFromCart(product)}><FontAwesomeIcon icon='minus' /></button>
-                        <span>{filterCart.quantity}</span>
-                        <button className="font-16 weight-600" onClick={() => addToCart(product)}><FontAwesomeIcon icon='plus' /></button>
-                    </span>
-                    :
                     <button className="font-16 weight-600" onClick={() => addToCart(product)}>ADD TO CART</button>
-                    }
                     <p className="font-16 weight-400">{product.description}</p>
                 </div>
             </div>

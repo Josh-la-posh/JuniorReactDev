@@ -1,24 +1,46 @@
 import { PureComponent } from "react";
 import { connect } from 'react-redux'
+import { client } from "..";
+import { QUERY_CURRENCIES } from "../FetchData/DisplayData";
 import { selectCurrency } from "../redux/ActionCreators";
 
 const mapDispatchToProps = (dispatch) => ({
-    switchCurrency: (currency) => {dispatch(selectCurrency(currency))}
+    switchCurrency: (symbol) => {dispatch(selectCurrency(symbol))}
 })
 
 class CurrencySwitcher extends PureComponent {
+    state = { 
+        currencies: []
+    };
+
     componentDidMount() {
-        selectCurrency()
+        selectCurrency();
+        this.currencies();
     }
 
+
+
+    async currencies() {
+        const result = await client.query({
+            query: QUERY_CURRENCIES
+        
+        });
+
+        this.setState({
+            currencies: [...result.data.currencies],
+        });
+    }
+
+
     render () {
+        const {currencies} = this.state
         const {data, switchCurrency} = this.props;
         return (
             <div className="currency flex col weight-500 font-18">
-                {data &&
-                data.currencies.map(currency =>{
+                {
+                currencies.map(({label, symbol}, index) =>{
                     return (
-                        <span key={currency.symbol} className={(this.props.currency === currency.symbol) ? 'flex-center active' : 'flex-center'} onClick={() => {switchCurrency(currency)}}><span>{currency.symbol}</span> <span>{currency.label}</span></span>                        
+                        <span key={index} className={(this.props.currency === symbol) ? 'flex-center active' : 'flex-center'} onClick={() => {switchCurrency(symbol)}}>{symbol} {label}</span>                        
                     )
                 })
                 }
