@@ -8,7 +8,7 @@ const mapStateToProps = (state) => ({
     subTotal: state.reducer.subTotal,
     index: state.reducer.index,
     currency: state.reducer.currency,
-    selectedAttribute: state.reducer.selectedAttribute
+    totalQuantity: state.reducer.totalQuantity,
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -28,7 +28,7 @@ class CartItems extends PureComponent {
     }
 
     render() {
-        const {addToCart, removeFromCart, cart, subTotal, nextImg, prevImg, selectedAttribute, currency} = this.props;
+        const {addToCart, removeFromCart, cart, subTotal, nextImg, prevImg, currency, totalQuantity} = this.props;
 
 
 
@@ -75,7 +75,7 @@ class CartItems extends PureComponent {
                                         <button className="add font-15 flex-center" onClick={()=> addToCart(cartItem)}>
                                             <FontAwesomeIcon icon='plus' />
                                         </button>
-                                        <span className="font-24 weight-500">{cartItem.quantity}</span>
+                                        <span className="font-24 weight-500">{cartItem.qty}</span>
                                         <button className="minus font-15 flex-center" onClick={()=>removeFromCart(cartItem)}>
                                             <FontAwesomeIcon icon='minus' />
                                         </button>
@@ -106,11 +106,11 @@ class CartItems extends PureComponent {
                             </tr>
                             <tr className="font-24 weight-400">
                                 <td>Quantity:</td>
-                                <td><span className="weight-700">{cart.length}</span></td>
+                                <td><span className="weight-700">{totalQuantity}</span></td>
                             </tr>
                             <tr className="font-24 weight-400">
                                 <td className="weight-500">Total:</td>
-                                <td><span className="weight-700">{currency}{subTotal}</span></td>
+                                <td><span className="weight-700">{currency}{Number(subTotal).toFixed(2)}</span></td>
                             </tr>
                         </tbody>
                     </table>

@@ -25,7 +25,7 @@ export const addData = (product) => ({
     payload: product
 });
 
-export const addToCart = (product) => async (dispatch) => {
+export const addToCart = (product, index) => async (dispatch) => {
 
     // CART
     const cart = localStorage.getItem('data') ?
@@ -37,6 +37,7 @@ export const addToCart = (product) => async (dispatch) => {
         payload: {
             cart,
             product,
+            index
         }
     })
 }

@@ -26,22 +26,34 @@ if (localStorage.getItem('Total Price')) {
     initialState.subTotal = 0;
 }
 
-// if (localStorage.getItem('selectedAttribute')) {
-//     initialState.selectedAttribute = JSON.parse(localStorage.getItem('selectedAttribute'))
-// } else {
-//     initialState.selectedAttribute = [];
-// }
+if (localStorage.getItem('selectedAttribute')) {
+    initialState.selectedAttribute = JSON.parse(localStorage.getItem('selectedAttribute'))
+} else {
+    initialState.selectedAttribute = [];
+}
 
 export const Reducer = (state=initialState, action) => {
     switch(action.type) {
         case ActionTypes.ADD_TO_CART:
             return addProductToCart(state, action);
         case ActionTypes.REMOVE_FROM_CART:
-            var cart = [...action.payload.cart];
+            var cart = [...action.payload.cart];            
             var totalQuantity = state.totalQuantity - 1;
             localStorage.setItem('Total Quantity', JSON.stringify(totalQuantity));
-            var subTotal = state.subTotal - action.payload.product.price;
-            localStorage.setItem('Total Price', JSON.stringify(subTotal));
+
+
+            let subTotal = cart.reduce((total, cartItem) => {
+                cartItem.prices.forEach(({currency, amount}) => {
+                    if (currency.symbol === state.currency) {
+                        total = total + amount * cartItem.qty
+                    }
+                });
+                return total;
+            }, 0);
+            state.subTotal = subTotal;
+            localStorage.setItem('Total Price', JSON.stringify(subTotal))
+
+
             return {
                 ...state,
                 cart,
@@ -49,11 +61,11 @@ export const Reducer = (state=initialState, action) => {
                 subTotal
             };
         case ActionTypes.REMOVE_ITEM:
-            cart = [...action.payload.cart];
-            // totalQuantity = state.totalQuantity - selectedItem.quantity;
-            // localStorage.setItem('Total Quantity', JSON.stringify(totalQuantity));
-            // subTotal = state.subTotal - (selectedItem.price * selectedItem.quantity);
-            // localStorage.setItem('Total Price', JSON.stringify(subTotal));
+            // cart = [...action.payload.cart];
+            // // totalQuantity = state.totalQuantity - selectedItem.quantity;
+            // // localStorage.setItem('Total Quantity', JSON.stringify(totalQuantity));
+            // // subTotal = state.subTotal - (selectedItem.price * selectedItem.quantity);
+            // // localStorage.setItem('Total Price', JSON.stringify(subTotal));
             return {
                 ...state,
                 cart,
@@ -88,7 +100,7 @@ export const Reducer = (state=initialState, action) => {
             let selectedAttributes = product.inStock
                 ? product.attributes.reduce((selectedAttributes, { name, items }) => {
                     selectedAttributes.push({ [name]: items[0].value});
-                    // localStorage.setItem('selectedAttribute', JSON.stringify(selectedAttribute));
+                    localStorage.setItem('selectedAttribute', JSON.stringify(selectedAttribute));
                     return selectedAttributes
                 }, [])
                 : [];            
@@ -111,6 +123,7 @@ export const Reducer = (state=initialState, action) => {
 const addProductToCart = (state, action) => {
     var cart = [...action.payload.cart];
     var product = action.payload.product;
+    var index = action.payload.index;
     var {selectedAttribute} = state;
     let counter = 0;
     let totalQuantity;
@@ -132,21 +145,21 @@ const addProductToCart = (state, action) => {
                         ).slice(0, -3)
                         ) {
                             cart.splice(index, 1, {...cart[index], qty: cart[index].qty + 1,});
+                            localStorage.setItem('data', JSON.stringify(cart));
                     } else {
                         counter++;
                     }
                 }
-                localStorage.setItem('data', JSON.stringify(cart));
             })
         : cart.push({...product, selectedAttribute: selectedAttribute, qty: 1});
             localStorage.setItem('data', JSON.stringify(cart));
 
-        const uniqueId = [];
-        cart.forEach(cartItem => cartItem.id === product.id && uniqueId.push(cartItem.id));
+    const uniqueId = [];
+    cart.forEach(cartItem => cartItem.id === product.id && uniqueId.push(cartItem.id));
 
-        counter === uniqueId.length &&
-            cart.push({...product, selectedAttribute: selectedAttribute, qty: 1})
-            localStorage.setItem('data', JSON.stringify(cart));
+    counter === uniqueId.length &&
+        cart.push({...product, selectedAttribute: selectedAttribute, qty: 1})
+        localStorage.setItem('data', JSON.stringify(cart));
 
 
         //  TOTAL QUANTITY
@@ -162,23 +175,22 @@ const addProductToCart = (state, action) => {
         subTotal = cart.reduce((total, cartItem) => {
             cartItem.prices.forEach(({currency, amount}) => {
                 if (currency.symbol === state.currency) {
-                    total = amount * cartItem.qty
+                    total = total + amount * cartItem.qty
                 }
             });
             return total;
         }, 0);
         state.subTotal = subTotal;
         localStorage.setItem('Total Price', JSON.stringify(subTotal))
-
-
     }
 
 
     return {
         ...state,
         cart,
-        product,
-        totalQuantity
+        totalQuantity,
+        subTotal,
+        counter
     }
 }
 
@@ -197,7 +209,7 @@ const selectedAttribute = (state, action) => {
                     selectedAttribute.splice(index, 1, {...selectedAttribute[index], [name]: value});
                 })
                 : selectedAttribute.push({ [name]: value});
-                // localStorage.setItem('selectedAttribute', JSON.stringify(selectedAttribute));
+                localStorage.setItem('selectedAttribute', JSON.stringify(selectedAttribute));
                 
                 state.selectAttribute = selectedAttribute
 

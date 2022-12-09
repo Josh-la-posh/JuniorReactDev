@@ -46,31 +46,12 @@
             gap: 5px;
             color: var(--pri-color);
             cursor: pointer;
-
-            .up {                
-                display: none;
-            }           
-
-            &:hover .up {
-                display: block;
-            }
-            &:hover .down {
-                display: none;
-            }
-            
-            &:hover .currency {
-                visibility: visible;
-            }
             
             &.icon {
                 position: relative;
-                
-                a {
-                    color: var(--pri-color);
-                }
 
-                &:hover .overlay {
-                    visibility: visible;
+                &:last-child {
+                    cursor: unset;
                 }
 
                 &:hover .categories {

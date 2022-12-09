@@ -7,11 +7,12 @@ import { Link } from "react-router-dom";
 const mapStateToProps = (state) => ({
     cart: state.reducer.cart,
     currency: state.reducer.currency,
-    subTotal: state.reducer.subTotal
+    subTotal: state.reducer.subTotal,
+    totalQuantity: state.reducer.totalQuantity
 })
 
 const mapDispatchToProps = (dispatch) => ({
-    addToCart: (product) => {dispatch(addToCart(product))},
+    addToCart: (product, index) => {dispatch(addToCart(product, index))},
     removeFromCart: (product) => {dispatch(removeFromCart(product))}
 })
 
@@ -22,21 +23,18 @@ class CategoryOverlay extends PureComponent {
     }
 
     render() {
-        const {addToCart, removeFromCart, cart, currency, subTotal} = this.props
+        const {addToCart, removeFromCart, cart, currency, subTotal, totalQuantity, toggle} = this.props
 
         return (
-            <div className="overlay">
-                <div className="background">
-                </div>
+            <div className="categoryOverlay">
+                <p className="font-16 weight-700">My Bag, 
+                    <span className="weight-500"> {totalQuantity} items</span>
+                </p>
 
-                <div className="categoryOverlay">
-                    <p className="font-16 weight-700">My Bag, 
-                        <span className="weight-500"> 3 items</span>
-                    </p>
-
-                    {cart.map(cartItem => {
+                <div className="overlayContent">
+                    {cart.map((cartItem, index) => {
                         return (
-                            <section className="flex" key={cartItem.id}>
+                            <section className="flex" key={index}>
                                     <div className="leftContent flex col font-16">
                                         <span className="weight-300">{cartItem.name}</span>
                                         <span className="nameLight weight-300">{cartItem.brand}</span>
@@ -71,10 +69,10 @@ class CategoryOverlay extends PureComponent {
 
                                     <div className="rightContent flex">
                                         <div className="button flex-btw-align col">
-                                            <button className="add flex-center font-14" onClick={() => {addToCart(cartItem)}}>
+                                            <button className="add flex-center font-14" onClick={() => {addToCart(cartItem, index)}}>
                                                 <FontAwesomeIcon icon='plus' />
                                             </button>
-                                            <span className="weight-500">{cartItem.quantity}</span>
+                                            <span className="weight-500">{cartItem.qty}</span>
                                             <button className="minus flex-center font-14" onClick={() => {removeFromCart(cartItem)}}>
                                                 <FontAwesomeIcon icon='minus' />
                                             </button>
@@ -86,16 +84,16 @@ class CategoryOverlay extends PureComponent {
                             </section>
                         )
                     })}
+                </div>
 
-                    <div className="total flex-btw-align">
-                        <span className="weight-500">Total</span>
-                        <span className="weight-700">{currency}{subTotal}</span>
-                    </div>
-                    
-                    <div className="button flex-btw-align font-14 weight-600">
-                        <Link to='cart'><button className="view">VIEW BAG</button></Link>
-                        <button className="checkout">ORDER</button>
-                    </div>
+                <div className="total flex-btw-align">
+                    <span className="weight-500">Total</span>
+                    <span className="weight-700">{currency}{(subTotal)?.toFixed(2)}</span>
+                </div>
+                
+                <div className="button flex-align font-14 weight-600">
+                    <Link to='/Scandiweb/cart'><button className="view" onClick={toggle}>VIEW BAG</button></Link>
+                    <button className="checkout">ORDER</button>
                 </div>
             </div>
         );
