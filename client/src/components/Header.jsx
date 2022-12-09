@@ -36,8 +36,9 @@ class Header extends PureComponent {
 
     closeDropDown = (e) => {
         if ((this.state.isCartToggled && this.state.isCurrencyToggled)) {
-            if (this.myCartRef && !this.myCartRef.current.contains(e.target)) {
+            if (this.myCartRef && !this.myCartRef.current.contains(e.target) && this.myCurrencyRef && !this.myCurrencyRef.current.contains(e.target)) {
                 this.setState({isCartToggled: false});
+                this.setState({isCurrencyToggled: false});
             } else if (!this.cartRef) {
                 if (this.myCurrencyRef && !this.myCurrencyRef.current.contains(e.target)) {
                     this.setState({isCurrencyToggled: false});
@@ -80,7 +81,7 @@ class Header extends PureComponent {
         const {totalQuantity, currency} = this.props
 
         return (
-            <div className="header flex-btw-align" ref={this.myCartRef}>
+            <div className="header flex-btw-align">
                 <div className="categories flex font-16">
                     {categories?.map(({name}, index) => {
                         return (                            
@@ -95,7 +96,7 @@ class Header extends PureComponent {
                         <FontAwesomeIcon icon='chevron-up' className="up font-12" style={isCurrencyToggled ? {display: 'block'} : {display: 'none'}}/> */}
                         {isCurrencyToggled && <CurrencySwitcher currency={currency}/>}
                     </span>
-                    <span className="icon">
+                    <span className="icon" ref={this.myCartRef}>
                         <div onClick={this.toggleCartIcon}><FontAwesomeIcon icon='cart-shopping' className="font-18"/><span className="flex-center quantity">{totalQuantity ? totalQuantity : 0}</span></div>
                         {isCartToggled && <CategoryOveray toggle={this.toggleCartIcon}/>}
                     </span>
