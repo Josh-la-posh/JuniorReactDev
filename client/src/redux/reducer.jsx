@@ -95,18 +95,17 @@ export const Reducer = (state=initialState, action) => {
         case ActionTypes.SELECT_SIZE:
             return selectedAttribute(state, action)
         case ActionTypes.DEFAULT_ATTRIBUTE:
-            const product = action.payload
+            const product = action.payload;
 
             let selectedAttributes = product.inStock
                 ? product.attributes.reduce((selectedAttributes, { name, items }) => {
                     selectedAttributes.push({ [name]: items[0].value});
-                    localStorage.setItem('selectedAttribute', JSON.stringify(selectedAttribute));
+                    localStorage.setItem('selectedAttribute', JSON.stringify(selectedAttributes));
                     return selectedAttributes
                 }, [])
                 : [];            
             state.selectedAttribute = selectedAttributes
             console.log(selectedAttributes)
-            console.log(product.inStock)
             return {
                 ...state,
                 selectedAttributes
@@ -123,7 +122,6 @@ export const Reducer = (state=initialState, action) => {
 const addProductToCart = (state, action) => {
     var cart = [...action.payload.cart];
     var product = action.payload.product;
-    var index = action.payload.index;
     var {selectedAttribute} = state;
     let counter = 0;
     let totalQuantity;
@@ -134,28 +132,30 @@ const addProductToCart = (state, action) => {
             ? cart.forEach((cartItem, index) => {
                 if (cartItem.id === product.id) {
                     if (JSON.stringify(
-                            [...cartItem.selectedAttribute].sort((a,b) =>
-                                Object.keys(a)[0].localeCompare(Object.keys(b)[0]),
-                            ),
+                        [...cartItem.selectedAttribute].sort((a,b) =>
+                        Object.keys(a)[0].localeCompare(Object.keys(b)[0]),
+                        ),
                         ).slice(0, -3) ===
                         JSON.stringify(
                             [...selectedAttribute].sort((a,b) =>
-                                Object.keys(a)[0].localeCompare(Object.keys(b)[0]),
+                            Object.keys(a)[0].localeCompare(Object.keys(b)[0]),
                             ),
-                        ).slice(0, -3)
-                        ) {
-                            cart.splice(index, 1, {...cart[index], qty: cart[index].qty + 1,});
+                            ).slice(0, -3)
+                            ) {
+                                cart.splice(index, 1, {...cart[index], qty: cart[index].qty + 1,})
                             localStorage.setItem('data', JSON.stringify(cart));
                     } else {
                         counter++;
                     }
                 }
             })
-        : cart.push({...product, selectedAttribute: selectedAttribute, qty: 1});
+        : cart.push({...product, selectedAttribute: selectedAttribute, qty: 1,});
             localStorage.setItem('data', JSON.stringify(cart));
 
     const uniqueId = [];
     cart.forEach(cartItem => cartItem.id === product.id && uniqueId.push(cartItem.id));
+
+    console.log(counter, uniqueId)
 
     counter === uniqueId.length &&
         cart.push({...product, selectedAttribute: selectedAttribute, qty: 1})
@@ -203,15 +203,13 @@ const selectedAttribute = (state, action) => {
     var selectedAttribute = [...state.selectedAttribute];
     selectedAttribute?.some(att => Object.keys(att)[0] === name)
         ? selectedAttribute.forEach((att, index) => {
-            Object.keys(att)[0] === name && att[name] === value
-                ? selectedAttribute.splice(index, 1)
-                : Object.keys(selectedAttribute[index])[0] === name &&
-                    selectedAttribute.splice(index, 1, {...selectedAttribute[index], [name]: value});
-                })
-                : selectedAttribute.push({ [name]: value});
-                localStorage.setItem('selectedAttribute', JSON.stringify(selectedAttribute));
-                
-                state.selectAttribute = selectedAttribute
+            Object.keys(selectedAttribute[index])[0] === name &&
+                selectedAttribute.splice(index, 1, {...selectedAttribute[index], [name]: value});
+            })
+        : selectedAttribute.push({ [name]: value});
+        localStorage.setItem('selectedAttribute', JSON.stringify(selectedAttribute));
+        
+        state.selectAttribute = selectedAttribute
 
     return {
         ...state,

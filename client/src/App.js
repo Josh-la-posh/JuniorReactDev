@@ -20,31 +20,9 @@ function App() {
     if(error) {
       <h1>An error occured</h1>
     }
-    // let id = useParams();
     if (data) {
-      console.log(id.id)
-
       const product = data.categories[0].products.filter(product => product.id === id.id);
-      return <PDP product={product[0]}  />;
-    }
-
-  }
-
-  const CategoryId = () => {
-    let id = useParams();
-    if (loading) {
-      <h1>loading...</h1>
-    }
-    if(error) {
-      <h1>An error occured</h1>
-    }
-    // let id = useParams();
-    if (data) {
-      console.log(id.id)
-
-      const product = data.categories[0].products.filter(product => product.id === id.id);
-      console.log(id.id)
-      return <PDP product={product[0]}  />;
+      return <PDP product={product[0]} />;
     }
 
   }

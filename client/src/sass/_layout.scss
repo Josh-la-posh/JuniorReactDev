@@ -451,7 +451,7 @@
 .categoryOverlay {
     position: absolute;
     width: 18.313rem;
-    height: 41.688rem;
+    max-height: 41.688rem;
     padding: 2rem 1rem;
     color: var(--pri-color);
     background: #fff;

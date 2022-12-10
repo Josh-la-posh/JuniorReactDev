@@ -1,6 +1,6 @@
 import { PureComponent } from "react";
 import { connect } from 'react-redux';
-import {addToCart, removeFromCart, selectAttribute, defaultAttribute} from '../redux/ActionCreators';
+import {addToCart, selectAttribute, defaultAttribute} from '../redux/ActionCreators';
 
 const mapStateToProps = (state) => ({
     cart: state.reducer.cart,
@@ -10,7 +10,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     addToCart: (product) => {dispatch(addToCart(product))},
-    removeFromCart: (product) => {dispatch(removeFromCart(product))},
     selectAttribute: (value, name) => {dispatch(selectAttribute(value, name))},
 })
 
@@ -19,7 +18,6 @@ class PdpContent extends PureComponent {
     
     componentDidMount() {
         addToCart();
-        removeFromCart();
         selectAttribute();
     }
 
@@ -28,7 +26,7 @@ class PdpContent extends PureComponent {
     }
 
     render() {
-        const {product, addToCart, removeFromCart, selectAttribute, selectedAttribute} = this.props;
+        const {product, addToCart, selectAttribute, selectedAttribute} = this.props;
         return (
             
             <div className="pdp flex">

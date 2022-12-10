@@ -25,7 +25,7 @@ export const addData = (product) => ({
     payload: product
 });
 
-export const addToCart = (product, index) => async (dispatch) => {
+export const addToCart = (product) => async (dispatch) => {
 
     // CART
     const cart = localStorage.getItem('data') ?
@@ -36,8 +36,7 @@ export const addToCart = (product, index) => async (dispatch) => {
         type: ActionTypes.ADD_TO_CART,
         payload: {
             cart,
-            product,
-            index
+            product,    
         }
     })
 }
@@ -59,6 +58,7 @@ export const removeFromCart = (product) => async (dispatch) => {
 
     // FOR EXISTING PRODUCT IN CART
     const existingItem = cart.findIndex(cartItem =>{return cartItem.id === product.id});
+    console.log(existingItem)
 
     //TO REMOVE ITEM FROM CART
     if (cart[existingItem].qty === 0) {
@@ -188,3 +188,11 @@ export const defaultAttribute = (product) => ({
     type: ActionTypes.DEFAULT_ATTRIBUTE,
     payload: product
 })
+
+// export const defaultAttribute = (product) => async (dispatch) => {
+
+//     dispatch({
+//         type: ActionTypes.DEFAULT_ATTRIBUTE,
+//         payload: product,
+//     })
+// }

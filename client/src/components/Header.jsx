@@ -39,26 +39,26 @@ class Header extends PureComponent {
             if (this.myCartRef && !this.myCartRef.current.contains(e.target) && this.myCurrencyRef && !this.myCurrencyRef.current.contains(e.target)) {
                 this.setState({isCartToggled: false});
                 this.setState({isCurrencyToggled: false});
-            } else if (!this.cartRef) {
-                if (this.myCurrencyRef && !this.myCurrencyRef.current.contains(e.target)) {
-                    this.setState({isCurrencyToggled: false});
-                }
             }
         } else if (!this.state.isCartToggled && this.state.isCurrencyToggled) {
             if (this.myCurrencyRef && !this.myCurrencyRef.current.contains(e.target)) {
                 this.setState({isCurrencyToggled: false});
             }
-        } else {
-            if (this.myCartRef && !this.myCartRef.current.contains(e.target)) {
+        } else if (this.state.isCartToggled && !this.state.isCurrencyToggled) {
+            if (this.myCartRef && !this.myCartRef.current.contains(e.target) && this.myCurrencyRef && this.myCurrencyRef.current.contains(e.target)) {
+                this.setState({isCartToggled: false});
+                this.setState({isCartToggled: true});
+            } 
+            else if (this.myCartRef && !this.myCartRef.current.contains(e.target)) {
                 this.setState({isCartToggled: false});
             }
         }
 
 
-        if (!this.state.isCartToggled || (this.myCartRef && !this.myCartRef.current.contains(e.target))) {
-            document.body.style.background = '#fff'
-        } else {
+        if (this.state.isCartToggled || (this.state.isCartToggled && this.myCurrencyRef.current.contains(e.target))) {
             document.body.style.background = 'rgba(57, 55, 72, 0.22)';
+        } else {
+            document.body.style.background = '#fff'
             // document.body.getElementsByClassName("header").style.background = '#fff'
         }
     }

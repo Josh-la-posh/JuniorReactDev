@@ -15,10 +15,25 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 class Product extends PureComponent {
+    constructor(props) {
+        super(props);
+        this.defAtt = this.defAtt.bind(this)
+    }
     
     componentDidMount() {
+        // this.defAtt()
         addToCart();
-        defaultAttribute();
+        setTimeout(() => {
+            this.defAtt()
+          }, 1000)
+    }
+
+    defAtt = () => {
+        this.props.products.map((product) => {
+            if (this.props.products.length) {
+                this.props.defaultAttribute(product);            
+            }
+        });
     }
     
     render() {
@@ -32,7 +47,7 @@ class Product extends PureComponent {
                         {products.length ?
                             products.map(product => {
                                 return(
-                                    <Link key={product.id} to={product.inStock && (`pdp/${product.id}`)} onClick={() => defaultAttribute(product)}>
+                                    <Link key={product.id} to={product.inStock && (`pdp/${product.id}`)}>
                                         <div className={product.inStock ? 'col-lg-4 flex col' : 'col-lg-4 flex col outOfStock'}>                            
                                             <div className="img">
                                                 <img src={product.gallery[0]} alt="" />

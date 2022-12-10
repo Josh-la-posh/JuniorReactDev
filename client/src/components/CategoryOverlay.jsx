@@ -12,7 +12,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-    addToCart: (product, index) => {dispatch(addToCart(product, index))},
+    addToCart: (product) => {dispatch(addToCart(product))},
     removeFromCart: (product) => {dispatch(removeFromCart(product))}
 })
 
@@ -69,7 +69,7 @@ class CategoryOverlay extends PureComponent {
 
                                     <div className="rightContent flex">
                                         <div className="button flex-btw-align col">
-                                            <button className="add flex-center font-14" onClick={() => {addToCart(cartItem, index)}}>
+                                            <button className="add flex-center font-14" onClick={() => {addToCart(cartItem)}}>
                                                 <FontAwesomeIcon icon='plus' />
                                             </button>
                                             <span className="weight-500">{cartItem.qty}</span>
