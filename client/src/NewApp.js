@@ -33,23 +33,6 @@ function withRouter(Component) {
 const HOCPdpId = withRouter(PdpId);
 
 class NewApp extends Component {
-  state = {
-    id: "",
-  };
-  componentDidMount() {
-    this.setState({
-      id: this.props.params.id,
-    });
-  }
-  static getDerivedStateFromProps(nextProps) {
-    return {
-      id: nextProps.params.id,
-    };
-  }
-  fetchData = (id) => {
-    // ...
-  };
-
   render() {
     return (
       <BrowserRouter>
