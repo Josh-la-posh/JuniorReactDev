@@ -1,20 +1,27 @@
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
   "name": "server",
   "version": "1.0.0",
   "description": "### Overview",
   "main": "main.ts",
 =======
+=======
+>>>>>>> 6afa3ac0847f1206161ec92b344aac44c4051046
   "name": "junior-test-endpoint",
   "version": "1.0.0",
   "description": "### Overview",
   "main": "src/main.ts",
+<<<<<<< HEAD
+>>>>>>> 6afa3ac0847f1206161ec92b344aac44c4051046
+=======
 >>>>>>> 6afa3ac0847f1206161ec92b344aac44c4051046
   "scripts": {
     "build": "tsc",
     "start": "nodemon --exec ts-node src/main.ts",
     "dev": "concurrently \"tsc -w\" \"nodemon dist/main.js\""
   },
+<<<<<<< HEAD
 <<<<<<< HEAD
   "author": "",
   "license": "ISC",
@@ -23,6 +30,8 @@
     "apollo-server": "^3.11.1",
     "graphql": "^15.5.0",
 =======
+=======
+>>>>>>> 6afa3ac0847f1206161ec92b344aac44c4051046
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -33,6 +42,9 @@
   "devDependencies": {
     "@types/express": "^4.17.14",
     "concurrently": "^6.0.2",
+<<<<<<< HEAD
+>>>>>>> 6afa3ac0847f1206161ec92b344aac44c4051046
+=======
 >>>>>>> 6afa3ac0847f1206161ec92b344aac44c4051046
     "nodemon": "^2.0.20",
     "ts-node": "^10.9.1",
